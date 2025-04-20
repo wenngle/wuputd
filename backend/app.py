@@ -5,6 +5,7 @@ from functools import lru_cache
 import feedparser
 import openapi_client
 import requests
+import markdown
 
 import chatbot
 from flask import Flask, jsonify, request, session
@@ -86,7 +87,7 @@ def chat_endpoint():
     # 4. No need to save state back - the object itself persists in the 'chatbots' dict
 
     # 5. Return the response
-    return jsonify({"response": bot_response})
+    return jsonify({"response": markdown.markdown(bot_response)})
 
 
 if __name__ == '__main__':

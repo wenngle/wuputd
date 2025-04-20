@@ -14,15 +14,7 @@ const ChatInterface = () => {
   useEffect(() => {
     setUserId(uuidv4());
   }, []);
-  
-  // Auto-scroll to the bottom of the chat
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-  
-  const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+
   
   // Handle sending a message
   const handleSendMessage = async (e) => {

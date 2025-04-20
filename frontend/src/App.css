@@ -5,6 +5,9 @@
 
         --titleGradient: linear-gradient(#00000000, #00000000, #1b1c1dE5);
     }
+    .bgIMG{
+        background-image: url("assets/whatsUp_transparent.png");
+    }
 
     #titleContainer {
         background-color: var(--bgColor); /* Your desired solid background color */
@@ -40,6 +43,10 @@
     #titleContainer {
         background: var(--titleGradient);
     }
+    .bgIMG{
+        background-image: url("assets/whatsUpW_transparent.png");
+        opacity: 30%;
+    }
 
     #ChatTitle {
         color: var(--textColor);
@@ -67,9 +74,8 @@
     --warmgrey6: #A59D95;
     --warmgrey10: #766A62;
 }
-
 html{
-    box-shadow: inset var(--bgColor) 0 10vh;
+    overflow-x: hidden;
 }
 
 html::-webkit-scrollbar {
@@ -98,7 +104,11 @@ html::-webkit-scrollbar-thumb {
 }
 
 .bgIMG {
-    /*background-image:*/
+    margin-top: 5vh;
+    width: 100vw;
+    height: 95vh;
+    position: fixed;
+    background-repeat: no-repeat;
 }
 
 @keyframes gradient {
@@ -122,15 +132,12 @@ html::-webkit-scrollbar-thumb {
     align-content: flex-end;
 
 
+
     animation: expandOnLoad 0.5s ease-in-out 0.2s forwards; /* Apply the animation */
 }
-#titleContainer .container{
-    vertical-align: bottom;
-    align-content: flex-end;
-    bottom: 0;
-}
+
 #titleContainer::-webkit-scrollbar {
-  display: none;
+    display: none;
 }
 
 @keyframes expandOnLoad {
@@ -138,7 +145,7 @@ html::-webkit-scrollbar-thumb {
         height: 95vh;
     }
     100% {
-        height: 70vh;
+        height: 80vh;
     }
 }
 
@@ -153,22 +160,24 @@ html::-webkit-scrollbar-thumb {
     font-family: "Climate Crisis", sans-serif;
 
 }
-#chatbot .prompt, #chatbot .response{
+
+#chatbot .prompt, #chatbot .response {
     margin: 1vmin;
     padding: 1vmin;
 
     width: 50vw;
 }
 
-#chatbot .prompt{
+#chatbot .prompt {
     float: right;
     background-color: var(--SolarOrange);
 }
-#chatbot .response{
+
+#chatbot .response {
     float: left;
 }
 
-.input{
+.input {
     padding-top: 5vmin;
     background-color: var(--bgColor);
 }

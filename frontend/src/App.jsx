@@ -160,6 +160,15 @@ function GetMessage() {
     }, []);
 
 
+    useEffect(() => {
+        scrollToBottom();
+    }, [messages]);
+
+    const scrollToBottom = () => {
+        messagesEndRef.current?.scroll();
+    };
+
+
     // Handle sending a message
     const handleSendMessage = async (e) => {
         e.preventDefault();
@@ -226,7 +235,7 @@ function GetMessage() {
     return (
         <div className="flex flex-col h-screen max-w-2xl mx-auto">
             {/* Messages container */}
-            <div className="flex-grow overflow-y-auto p-4 space-y-4 mb-4">
+            <div className="flex-grow overflow-y-auto space-y-4 mb-4">
                 {messages.length === 0 ? (<></>
                 ) : (
                     messages.map(message => (
@@ -241,7 +250,7 @@ function GetMessage() {
                                         : 'bg-gray-200 text-gray-800 rounded-bl-none'
                                 }`}
                             >
-                                <p>{message.content}</p>
+                                <div dangerouslySetInnerHTML={{__html:message.content}}></div>
                                 <p className="text-xs opacity-75 mt-1">
                                     {new Date(message.timestamp).toLocaleTimeString()}
                                 </p>
@@ -303,14 +312,13 @@ function App() {
             <div className={"bg"}></div>
             <div className={"bgIMG"}></div>
             <div id="titleContainer">
-                <div className={"container"}>
+                <div id = "titleContainerIn" className={"container"}>
                     <div id="ChatTitle" className={"element"}>
                         <a>What's Up</a>
                         <br/>
                         UTD?
                     </div>
                     <div id={"chatbot"}>
-
                         <GetMessage/>
                     </div>
                 </div>
