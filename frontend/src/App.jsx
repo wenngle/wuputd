@@ -1,5 +1,6 @@
-import {useEffect, useState} from 'react'
+import React, {useEffect, useRef, useState} from 'react'
 import './App.css'
+import {v4 as uuidv4} from "uuid";
 
 function News() {
     let [news, setNews] = useState("loading")
@@ -15,28 +16,32 @@ function News() {
         );
     }
 
+
     return (
         <div id="newsContainer">
-            {news.map((item, index) => (
-                <div key={index} className="newsCard card">
-                    <div className="card-header">
-                        {news[index]["source"]}
-                    </div>
-                    <div className="card-body container">
-                        <h4 className="card-title">
-                            <a href={news[index]["link"]}>{news[index]["title"]}</a>
-                        </h4>
-                        <div className="card-text row">
-                            <div className={"col-6"}>
-                                Published: {news[index]["published"][1]}/{news[index]["published"][2]}/{news[index]["published"][0]}
-                            </div>
-                            <div className={"col-6"}>
-                                Updated: {news[index]["updated"][1]}/{news[index]["updated"][2]}/{news[index]["updated"][0]}
+            <div id={"newsTitle"}><h4>News </h4><br/></div>
+            <div className="newsFeed">
+                {news.map((item, index) => (
+                    <div key={index} className="newsCard card">
+                        <div className="card-header">
+                            {item["source"]}
+                        </div>
+                        <div className="card-body container">
+                            <h5 className="card-title">
+                                <a href={item["link"]}>{item["title"]}</a>
+                            </h5>
+                            <div className="card-text row">
+                                <div className={"col-6"}>
+                                    Published: {item["published"][1]}/{item["published"][2]}/{item["published"][0]}
+                                </div>
+                                <div className={"col-6"}>
+                                    Updated: {item["updated"][1]}/{item["updated"][2]}/{item["updated"][0]}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </div>
     );
 }
@@ -50,28 +55,37 @@ function Weather() {
         })
     }, []) // Empty dependency array added here
 
-    return (<>
-        <div id="weatherCard" className={"card container"}>
-            <div className={"card-body row"}>
-                <div className={"col-7"}>
-                    <h5 className={"card-title"}>Weather</h5>
-                    <h6 className={"card-subtitle mb-2 text-body-secondary"}>
-                        Wind: {weather["wind_speed"]}mph {weather["wind_direction"]}
-                    </h6>
-                </div>
-                <div className={"col-5"}>
-                    <h5 className={"card-title"}>
-                        {weather["temp"]}ºF {weather["icon"]}
-                    </h5>
-                    <h6 className={"card-subtitle mb-2 text-body-secondary"}>
-                        Rain: {weather["rain_percent"]}%
-                    </h6>
-                </div>
+    return <div id="weatherCard" className={"card container"}>
+        <div className={"card-body row"}>
+            <div className={"col-7"}>
+                <h5 className={"card-title"}>Weather &nbsp;&nbsp;</h5>
+                <h6 className={"card-subtitle mb-2 text-body-secondary"}>
+                    Wind: {weather["wind_speed"]}mph {weather["wind_direction"]}
+                </h6>
+            </div>
+            <div className={"col-5"}>
+                <h5 className={"card-title"}>
+                    {weather["temp"]}ºF {weather["icon"]}
+                </h5>
+                <h6 className={"card-subtitle mb-2 text-body-secondary"}>
+                    Rain: {weather["rain_percent"]}%
+                </h6>
             </div>
         </div>
-    </>)
+    </div>
 }
-function Events(){
+
+function ConvertDateToTime(isoDateString) {
+    try {
+        const date = new Date(isoDateString);
+        return date.toLocaleTimeString([], {hour: "2-digit", minute: "2-digit"}).toLowerCase();
+    } catch (error) {
+        console.error("Error converting date:", error);
+        return "Invalid Date";
+    }
+}
+
+function Events() {
     let [events, setEvents] = useState("loading")
     useEffect(() => {
         fetch("/api/campus-events/today").then(res => res.json()).then((data) => {
@@ -84,19 +98,24 @@ function Events(){
             <></>
         );
     }
-    return(
-        <div id = "eventContainer" className="card">
+    return (
+        <div id="eventContainer" className="card">
             <div className="card-header">
-                Today's Events
+                Happening Today
             </div>
             <ul className="list-group list-group-flush">
-                {events.map((item, index) => (
-                    <li key={index} className="list-group-item">
-                        {events[index]["title"]}
-                        <br />
-                        <span>@{events[index]["location"]}</span>
-                    </li>
-                ))}
+                {[...events]
+                    // Use the standard numerical comparison for dates
+                    .sort((a, b) => new Date(a["start_date"]) - new Date(b["start_date"]))
+                    // Map over the resulting sorted array
+                    .map((item, index) => ( // Use 'item' directly in the map callback
+                        <li key={index} className="list-group-item">
+                            {item["title"]} {/* Use item instead of events[index] */}
+                            <br/>
+                            {ConvertDateToTime(item["start_date"])}-{ConvertDateToTime(item["end_date"])}
+                            <a href={"https://locator.utdallas.edu/" + item["location"].replace(" ", "_")}>@{item["location"]}</a>
+                        </li>
+                    ))}
             </ul>
         </div>
     );
@@ -107,16 +126,16 @@ function Page() {
         <>
             <div id="mainpage" className={"container"}>
                 <div className={"row"}>
-                    <div className={"col-12 col-md-8 order-1 order-md-0"}>
-                        {/*NEWS*/}
-                        <News/>
-                    </div>
-                    <div className={"col-8 col-md-4 order-0 order-md-1"}>
+                    <div id="rightFeed" className={"smContainer col-8 col-md-4 order-0 order-md-1"}>
                         {/*WEATHER*/}
                         <Weather/>
 
                         {/*EVENTS*/}
                         <Events/>
+                    </div>
+                    <div className={"smContainer col-12 col-md-8 order-1 order-md-0"}>
+                        {/*NEWS*/}
+                        <News/>
                     </div>
                 </div>
             </div>
@@ -126,35 +145,163 @@ function Page() {
 }
 
 
+function GetMessage() {
+    // State management
+    const [messages, setMessages] = useState([]);
+    const [inputMessage, setInputMessage] = useState('');
+    const [userId, setUserId] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const messagesEndRef = useRef(null);
+
+    // Initialize userId on component mount (reset on refresh)
+    useEffect(() => {
+        setUserId(uuidv4());
+    }, []);
+
+
+    // Handle sending a message
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+
+        if (!inputMessage.trim()) return;
+
+        // Add user message to chat
+        const userMessage = {
+            id: Date.now(),
+            sender: 'user',
+            content: inputMessage,
+            timestamp: new Date().toISOString()
+        };
+
+        setMessages(prevMessages => [...prevMessages, userMessage]);
+        setInputMessage('');
+        setIsLoading(true);
+
+        try {
+            // Call the API
+            const response = await fetch('/api/chat', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({
+                    user_id: userId,
+                    message: inputMessage
+                })
+            });
+
+            if (!response.ok) {
+                throw new Error(`Error: ${response.status}`);
+            }
+
+            const data = await response.json();
+
+            // Add bot response to chat
+            const botMessage = {
+                id: Date.now() + 1,
+                sender: 'bot',
+                content: data.response || "Sorry, I couldn't process your request.",
+                timestamp: new Date().toISOString()
+            };
+
+            setMessages(prevMessages => [...prevMessages, botMessage]);
+        } catch (error) {
+            console.error('Error sending message:', error);
+
+            // Add error message to chat
+            const errorMessage = {
+                id: Date.now() + 1,
+                sender: 'bot',
+                content: "Sorry, there was an error processing your message. Please try again.",
+                timestamp: new Date().toISOString()
+            };
+
+            setMessages(prevMessages => [...prevMessages, errorMessage]);
+        } finally {
+            setIsLoading(false);
+        }
+    };
+
+    return (
+        <div className="flex flex-col h-screen max-w-2xl mx-auto">
+            {/* Messages container */}
+            <div className="flex-grow overflow-y-auto p-4 space-y-4 mb-4">
+                {messages.length === 0 ? (<></>
+                ) : (
+                    messages.map(message => (
+                        <div
+                            key={message.id}
+                            className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
+                        >
+                            <div
+                                className={`max-w-xs md:max-w-md lg:max-w-lg px-4 py-2 rounded-lg ${
+                                    message.sender === 'user'
+                                        ? 'bg-blue-500 text-white rounded-br-none'
+                                        : 'bg-gray-200 text-gray-800 rounded-bl-none'
+                                }`}
+                            >
+                                <p>{message.content}</p>
+                                <p className="text-xs opacity-75 mt-1">
+                                    {new Date(message.timestamp).toLocaleTimeString()}
+                                </p>
+                            </div>
+                        </div>
+                    ))
+                )}
+                {isLoading && (
+                    <div className="flex justify-start">
+                        <div className="px-4 py-2">
+                            <div className="flex space-x-2">
+                                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce"></div>
+                                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-75"></div>
+                                <div className="w-2 h-2 bg-gray-500 rounded-full animate-bounce delay-150"></div>
+                            </div>
+                        </div>
+                    </div>
+                )}
+                <div ref={messagesEndRef}/>
+            </div>
+
+            {/* Input form */}
+            <form onSubmit={handleSendMessage} className="flex space-x-2 p-4 rounded-b-lg">
+                <input
+                    type="text"
+                    value={inputMessage}
+                    onChange={e => setInputMessage(e.target.value)}
+                    placeholder="Type your message..."
+                    className="flex-grow p-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={isLoading}
+                />
+                <button
+                    type="submit"
+                    disabled={isLoading || !inputMessage.trim()}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 disabled:bg-blue-300"
+                >
+                    Send
+                </button>
+            </form>
+        </div>
+    );
+
+}
+
 function App() {
-    // const [count, setCount] = useState(0)
     // const [apiMessage, setApiMessage] = useState('')
     // const [isLoading, setIsLoading] = useState(true)
     // const [error, setError] = useState(null)
     //
-    // useEffect(() => {
-    //     // Use relative URL - this will be proxied by Vite
-    //     fetch('/api/hello')
-    //         .then(response => {
-    //             if (!response.ok) {
-    //                 throw new Error(`HTTP error! Status: ${response.status}`);
-    //             }
-    //             return response.json();
-    //         })
-    //         .then(data => {
-    //             setApiMessage(data.message);
-    //             setIsLoading(false);
-    //         })
-    //         .catch(error => {
-    //             console.error('Error fetching from API:', error);
-    //             setError(error.message);
-    //             setIsLoading(false);
-    //         });
-    // }, []); // Empty dependency array means this runs once on mount
+    // const theme = window.matchMedia('(prefers-color-scheme: dark)');
+    const theme = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+    useEffect(() => {
+        document.documentElement.setAttribute('data-bs-theme', theme ? "dark" : "light");
+        localStorage.setItem('theme', theme); // Store theme preference
+    }, [theme]);
 
     return (
         <>
             <div className={"bg"}></div>
+            <div className={"bgIMG"}></div>
             <div id="titleContainer">
                 <div className={"container"}>
                     <div id="ChatTitle" className={"element"}>
@@ -162,64 +309,17 @@ function App() {
                         <br/>
                         UTD?
                     </div>
+                    <div id={"chatbot"}>
+
+                        <GetMessage/>
+                    </div>
                 </div>
             </div>
             <div id="feedContainer">
                 <Page/>
             </div>
-            <div className={"mb-3 container input"}>
-                      <textarea className="form-control" id="chatInput" rows="3">
-                        Type Here
-                      </textarea>
-            </div>
-
-            {/*<div id="Chatbox" className={"mt-auto"}>*/}
-            {/*    <div className="container">*/}
-            {/*        <div id="ChatTitle" className={""}>*/}
-            {/*                What's Up*/}
-            {/*                <br/>*/}
-            {/*                UTD?*/}
-            {/*        </div>*/}
-            {/*        <div id = "chatspace" className="align-items-end"></div>*/}
-            {/*    </div>*/}
-            {/*</div>*/}
-            {/*    <Chatbox/>*/}
-            {/*<Page/>*/}
 
 
-            {/*    <div>*/}
-            {/*        <a href="https://vite.dev" target="_blank">*/}
-            {/*            <img src={viteLogo} className="logo" alt="Vite logo"/>*/}
-            {/*        </a>*/}
-            {/*        <a href="https://react.dev" target="_blank">*/}
-            {/*            <img src={reactLogo} className="logo react" alt="React logo"/>*/}
-            {/*        </a>*/}
-            {/*    </div>*/}
-            {/*    <h1>Vite + React</h1>*/}
-
-            {/*    /!* API Response Display *!/*/}
-            {/*    <div className="api-section">*/}
-            {/*        <h2>API Response</h2>*/}
-            {/*        {isLoading ? (*/}
-            {/*            <p>Loading...</p>*/}
-            {/*        ) : error ? (*/}
-            {/*            <p style={{color: 'red'}}>{error}</p>*/}
-            {/*        ) : (*/}
-            {/*            <p><strong>{apiMessage}</strong></p>*/}
-            {/*        )}*/}
-            {/*    </div>*/}
-
-            {/*    <div className="card">*/}
-            {/*        <button onClick={() => setCount((count) => count + 1)}>*/}
-            {/*            count is {count}*/}
-            {/*        </button>*/}
-            {/*        <p>*/}
-            {/*            Edit <code>src/App.jsx</code> and save to test HMR*/}
-            {/*        </p>*/}
-            {/*    </div>*/}
-            {/*    <p className="read-the-docs">*/}
-            {/*        Click on the Vite and React logos to learn more*/}
-            {/*    </p>*/}
         </>
     )
 }

@@ -7,9 +7,11 @@ import "bootstrap/dist/js/bootstrap.bundle.min";
 
 
 import App from './App.jsx'
+import ChatInterface from "./chat-component.jsx";
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <App />
+      {/*<ChatInterface/>*/}
   </StrictMode>,
 )

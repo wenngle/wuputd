@@ -1,48 +1,57 @@
-/*#root {*/
-/*  max-width: 1280px;*/
-/*  margin: 0 auto;*/
-/*  padding: 2rem;*/
-/*  text-align: center;*/
-/*}*/
+@media (prefers-color-scheme: dark) {
+    :root {
+        --bgColor: #1b1c1d;
+        --textColor: #0F0F0F;
 
-/*.logo {*/
-/*  height: 6em;*/
-/*  padding: 1.5em;*/
-/*  will-change: filter;*/
-/*  transition: filter 300ms;*/
-/*}*/
-/*.logo:hover {*/
-/*  filter: drop-shadow(0 0 2em #646cffaa);*/
-/*}*/
-/*.logo.react:hover {*/
-/*  filter: drop-shadow(0 0 2em #61dafbaa);*/
-/*}*/
+        --titleGradient: linear-gradient(#00000000, #00000000, #1b1c1dE5);
+    }
 
-/*@keyframes logo-spin {*/
-/*  from {*/
-/*    transform: rotate(0deg);*/
-/*  }*/
-/*  to {*/
-/*    transform: rotate(360deg);*/
-/*  }*/
-/*}*/
+    #titleContainer {
+        background-color: var(--bgColor); /* Your desired solid background color */
+    }
 
-/*@media (prefers-reduced-motion: no-preference) {*/
-/*  a:nth-of-type(2) .logo {*/
-/*    animation: logo-spin infinite 20s linear;*/
-/*  }*/
-/*}*/
+    #ChatTitle {
+        color: transparent;
+        background: linear-gradient(-45deg, var(--orange), var(--SaplingGreen), var(--SpaceBlue));
+        background-size: 400% 400%;
+        animation: gradient 15s ease infinite;
 
-/*.card {*/
-/*  padding: 2em;*/
-/*}*/
+        background-clip: text; /* Standard way to clip the background to the text shape */
+        mix-blend-mode: difference;
+    }
 
-/*.read-the-docs {*/
-/*  color: #888;*/
-/*}*/
+    #feedContainer, #chatbot {
+        opacity: 90%;
+    }
 
+    #chatbot {
+        opacity: 90%;
+    }
+}
+
+@media (prefers-color-scheme: light) {
+    :root {
+        --bgColor: #D5D2CA;
+        --textColor: #FAFAFA;
+
+        --titleGradient: linear-gradient(#D5D2CA00, #D5D2CA00, #D5D2CAE6);
+    }
+
+    #titleContainer {
+        background: var(--titleGradient);
+    }
+
+    #ChatTitle {
+        color: var(--textColor);
+    }
+
+    #feedContainer, #chatbot {
+        opacity: 80%;
+    }
+}
 
 :root {
+
     --green: #008542;
     --orange: #C75B12;
 
@@ -55,7 +64,25 @@
     --SpaceBlue: #0039A6;
 
     --warmgrey2: #D5D2CA;
+    --warmgrey6: #A59D95;
+    --warmgrey10: #766A62;
 }
+
+html{
+    box-shadow: inset var(--bgColor) 0 10vh;
+}
+
+html::-webkit-scrollbar {
+    background-color: var(--bgColor);
+    width: 7px;
+}
+
+html::-webkit-scrollbar-thumb {
+    background-color: var(--warmgrey6);
+    border-radius: 10px;
+    width: 1em;
+}
+
 
 .bg {
     background: linear-gradient(-45deg, var(--orange), var(--SaplingGreen), var(--SpaceBlue));
@@ -70,6 +97,10 @@
     z-index: -1;
 }
 
+.bgIMG {
+    /*background-image:*/
+}
+
 @keyframes gradient {
     0% {
         background-position: 0% 50%;
@@ -81,15 +112,25 @@
         background-position: 0% 50%;
     }
 }
-#titleContainer{
-    background: linear-gradient(rgba(213,210,202,0), rgba(213,210,202,0), rgba(213,210,202,0.9));
+
+#titleContainer {
     opacity: 90%;
 
     height: 95vh; /* Initial height */
-    overflow: hidden;
-    align-content: end;
+    overflow: auto;
+    vertical-align: bottom;
+    align-content: flex-end;
+
 
     animation: expandOnLoad 0.5s ease-in-out 0.2s forwards; /* Apply the animation */
+}
+#titleContainer .container{
+    vertical-align: bottom;
+    align-content: flex-end;
+    bottom: 0;
+}
+#titleContainer::-webkit-scrollbar {
+  display: none;
 }
 
 @keyframes expandOnLoad {
@@ -102,64 +143,112 @@
 }
 
 #ChatTitle {
-    Color: white;
-    font-size: 15vh;
+    font-size: 15vmin;
     font-family: "Climate Crisis", sans-serif;
 
 }
-#feedContainer{
-    background: var(--warmgrey2);
-    opacity: 80%;
 
-    height: 100vh;
+#ChatTitle a {
+    font-size: 12vmin;
+    font-family: "Climate Crisis", sans-serif;
+
+}
+#chatbot .prompt, #chatbot .response{
+    margin: 1vmin;
+    padding: 1vmin;
+
+    width: 50vw;
 }
 
-/*news*/
-#newsContainer{
-    height: 75vh;
-    overflow-y: scroll;
+#chatbot .prompt{
+    float: right;
+    background-color: var(--SolarOrange);
 }
-.newsCard{
-    margin-bottom: 5vh;
-}
-/*events*/
-#eventContainer{
-    margin-top: 5vh;
-}
-#eventContainer span{
-    font-size: 12px;
+#chatbot .response{
+    float: left;
 }
 
 .input{
-    position: fixed;
-    right:0;
-    left: 0;
-    margin: auto;
-    bottom: 2.5vh;
+    padding-top: 5vmin;
+    background-color: var(--bgColor);
+}
+
+#mainpage .smContainer {
+    margin-bottom: 5vh;
+}
+
+#feedContainer {
+    background: var(--bgColor);
+    padding-bottom: 5vh;
+}
+
+@media (min-width: 768px) {
+    #rightFeed {
+        align-self: flex-start;
+
+        position: sticky;
+        top: 5vh;
+    }
+
+    #eventContainer ul {
+        height: 60vh;
+        overflow: auto;
+    }
+
+    #eventContainer ul::-webkit-scrollbar {
+        background-color: var(--bgColor);
+        width: 7px;
+    }
+
+    #eventContainer ul::-webkit-scrollbar-thumb {
+        background-color: var(--warmgrey6);
+        border-radius: 10px;
+        width: 1em;
+    }
+
+}
+
+/*news*/
+#newsContainer {
+    /*height: 70vh;*/
+    /*overflow-y: scroll;*/
+
+    padding-top: 2.5vh;
+    padding-right: 5vh;
+    background-color: var(--bgColor);
 }
 
 
-
-#chatspace {
-    width: 100%;
-    height: 100vh;
-
-    opacity: 90%;
-
-    z-index: -1;
+.newsCard {
+    margin-bottom: 5vh;
 }
 
-#Chatbox {
-    height: 95vh;
-    align-content: end;
-
-    background: linear-gradient(rgba(213,210,202,0), rgba(213,210,202,1));
+/*events*/
+#eventContainer {
+    margin-top: 5vh;
 }
 
-
-
-
-#mainpage {
-    padding-top: 5vh;
-
+#eventContainer a {
+    font-size: 12px;
 }
+
+.list-group-item a {
+    float: right;
+}
+
+/*chatbot*/
+
+
+/*.input {*/
+/*    position: fixed;*/
+/*    right: 0;*/
+/*    left: 0;*/
+/*    margin: auto;*/
+/*    bottom: 0;*/
+
+/*    background: var(--titleGradient);*/
+/*}*/
+
+/*.input div {*/
+/*    padding-bottom: 2.5vh;*/
+/*}*/
